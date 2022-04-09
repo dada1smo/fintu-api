@@ -25,6 +25,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    financialItems: [{ type: Schema.Types.ObjectId, ref: 'FinancialItem' }],
+    categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
   },
   {
     timeStamps: true,
