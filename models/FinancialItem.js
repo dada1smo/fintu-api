@@ -34,6 +34,9 @@ const financialItemSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    recurrenceEnd: {
+      type: Date,
+    },
     savings: {
       type: Boolean,
       default: false,

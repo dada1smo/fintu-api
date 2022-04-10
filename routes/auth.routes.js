@@ -44,19 +44,19 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
 
     if (!user) {
-      throw new Error('Invalid username or password');
+      throw new Error('Invalid e-mail or password');
     }
 
     const compareHash = await bcrypt.compare(password, user.passwordHash);
 
     if (!compareHash) {
-      throw new Error('Invalid username or password');
+      throw new Error('Invalid e-mail or password');
     }
 
     const payload = {
