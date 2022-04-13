@@ -90,7 +90,9 @@ async function getMonthlyBalance(userEmail, reqMonth) {
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+// create new financial item
+
+router.post('/item', async (req, res) => {
   const { email } = req.user;
 
   try {
@@ -107,6 +109,66 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// get requested financial item
+
+router.get('/item/:id', async (req, res) => {
+  const { email } = req.user;
+  const { id } = req.params;
+
+  try {
+    const userId = await User.findOne({ email }).select('_id');
+    const getFinancialItem = await FinancialItem.findOne({
+      _id: id,
+      user: userId,
+    });
+
+    res.status(200).json(getFinancialItem);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// edit requested financial item
+
+router.put('/item/:id', async (req, res) => {
+  const { email } = req.user;
+  const { id } = req.params;
+
+  try {
+    const userId = await User.findOne({ email }).select('_id');
+    const { user } = await FinancialItem.findOne({ id });
+
+    if (userId._id.valueOf() !== user.valueOf()) {
+      throw new Error("Can't edit another user's item");
+    }
+
+    const {
+      title,
+      type,
+      value,
+      date,
+      status,
+      recurring,
+      recurrenceEnd,
+      category,
+    } = req.body;
+
+    const updatedFinancialItem = await FinancialItem.findByIdAndUpdate(
+      id,
+      { title, type, value, date, status, recurring, recurrenceEnd, category },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json(updatedFinancialItem);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// get all items on requested month
 
 router.get('/months/:month', async (req, res) => {
   const { email } = req.user;
@@ -143,6 +205,8 @@ router.get('/months/:month', async (req, res) => {
   }
 });
 
+// get balance on requested month
+
 router.get('/months/balance/:month', async (req, res) => {
   const { email } = req.user;
   const { month } = req.params;
@@ -155,6 +219,8 @@ router.get('/months/balance/:month', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// get all monthly balances on requested year
 
 router.get('/year/balance/:year', async (req, res) => {
   const { email } = req.user;
@@ -170,6 +236,8 @@ router.get('/year/balance/:year', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// get balance on all items
 
 router.get('/savings', async (req, res) => {
   const { email } = req.user;
