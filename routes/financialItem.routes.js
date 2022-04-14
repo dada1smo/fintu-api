@@ -94,14 +94,41 @@ const router = Router();
 
 router.post('/item', async (req, res) => {
   const { email } = req.user;
+  const { installments, date } = req.body;
 
   try {
     const userId = await User.findOne({ email }).select('_id');
+
     const newFinancialItem = await FinancialItem.create({
       ...req.body,
       user: userId._id,
     });
+
     const { _id } = newFinancialItem;
+
+    if (installments >= 2) {
+      let amount = 1;
+      const newDate = new Date(date);
+      const installmentDate = `${newDate
+        .toISOString()
+        .slice(0, 10)}T00:00:00.000Z`;
+      const formatInstallmentDate = new Date(installmentDate);
+      formatInstallmentDate.setDate(1);
+
+      while (amount < installments) {
+        await FinancialItem.create({
+          ...req.body,
+          user: userId._id,
+          installment: amount + 1,
+          date: new Date(
+            formatInstallmentDate.setMonth(formatInstallmentDate.getMonth() + 1)
+          ),
+          origin: _id,
+        });
+        amount += 1;
+      }
+    }
+
     await User.findOneAndUpdate({ email }, { $push: { financialItems: _id } });
 
     res.status(201).json(newFinancialItem);
@@ -163,6 +190,28 @@ router.put('/item/:id', async (req, res) => {
     );
 
     res.status(200).json(updatedFinancialItem);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// delete requested financial item
+
+router.delete('/item/:id', async (req, res) => {
+  const { email } = req.user;
+  const { id } = req.params;
+
+  try {
+    const userId = await User.findOne({ email }).select('_id');
+    const { user } = await FinancialItem.findOne({ id });
+
+    if (userId._id.valueOf() !== user.valueOf()) {
+      throw new Error("Can't delete another user's item");
+    }
+
+    await FinancialItem.findByIdAndDelete(id);
+
+    res.status(200).json('Successfully deleted item');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -237,7 +286,7 @@ router.get('/year/balance/:year', async (req, res) => {
   }
 });
 
-// get balance on all items
+// get balance on all items including savings
 
 router.get('/savings', async (req, res) => {
   const { email } = req.user;
