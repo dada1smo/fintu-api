@@ -19,3 +19,5 @@ app.listen(process.env.PORT, () =>
 app.use('/auth', require('./routes/auth.routes'));
 
 app.use(require('./middlewares/auth.middlewares'));
+
+app.use('/financial-items', require('./routes/financialItem.routes'));
