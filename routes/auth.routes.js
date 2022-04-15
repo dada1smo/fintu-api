@@ -2,6 +2,42 @@ const { Router } = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Category = require('../models/Category');
+
+const defaultCategories = [
+  {
+    title: 'Pessoal',
+    color: '#EDE9FE',
+  },
+  {
+    title: 'Saúde',
+    color: '#ECFCCB',
+  },
+  {
+    title: 'Moradia',
+    color: '#FEF9C3',
+  },
+  {
+    title: 'Transporte',
+    color: '#CFFAFE',
+  },
+  {
+    title: 'Alimentação',
+    color: '#FFEDD5',
+  },
+  {
+    title: 'Educação',
+    color: '#DBEAFE',
+  },
+  {
+    title: 'Imprevistos',
+    color: '#FCE7F3',
+  },
+  {
+    title: 'Outros',
+    color: '#E4E4E7',
+  },
+];
 
 const router = Router();
 
@@ -27,6 +63,16 @@ router.post('/signup', async (req, res) => {
       username,
       email,
       passwordHash,
+    });
+
+    const { _id } = newUser;
+
+    console.log(_id);
+
+    defaultCategories.forEach(async (category) => {
+      const newCategory = await Category.create({ ...category, user: _id });
+      const categoryId = newCategory._id;
+      await User.findByIdAndUpdate(_id, { $push: { categories: categoryId } });
     });
 
     res.status(201).json({

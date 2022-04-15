@@ -148,7 +148,7 @@ router.get('/item/:id', async (req, res) => {
     const getFinancialItem = await FinancialItem.findOne({
       _id: id,
       user: userId,
-    });
+    }).populate({ path: 'category' });
 
     res.status(200).json(getFinancialItem);
   } catch (error) {
@@ -234,7 +234,9 @@ router.get('/months/:month', async (req, res) => {
       recurring: false,
       savings: false,
       user: userId._id,
-    }).sort({ date: 1 });
+    })
+      .sort({ date: 1 })
+      .populate({ path: 'category' });
 
     const recurringItems = await FinancialItem.find({
       date: { $lte: endDate },
@@ -246,7 +248,9 @@ router.get('/months/:month', async (req, res) => {
       recurring: true,
       savings: false,
       user: userId._id,
-    }).sort({ date: 1 });
+    })
+      .sort({ date: 1 })
+      .populate({ path: 'category' });
 
     res.status(200).json([...recurringItems, ...financialItems]);
   } catch (error) {
