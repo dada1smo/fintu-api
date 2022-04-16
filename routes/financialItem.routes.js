@@ -217,6 +217,31 @@ router.delete('/item/:id', async (req, res) => {
   }
 });
 
+// get all years in which the user has items
+
+router.get('/year/years/', async (req, res) => {
+  const { email } = req.user;
+
+  try {
+    const userId = await User.findOne({ email }).select('_id');
+
+    const allItems = await FinancialItem.find({ user: userId });
+
+    const years = allItems.map((item) => item.date.getFullYear());
+
+    const uniqueYears = [];
+    years.forEach((year) => {
+      if (!uniqueYears.includes(year)) {
+        uniqueYears.push(year);
+      }
+    });
+
+    res.status(200).json(uniqueYears);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // get all items on requested month
 
 router.get('/months/:month', async (req, res) => {
