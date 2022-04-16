@@ -42,10 +42,10 @@ const defaultCategories = [
 const router = Router();
 
 router.post('/signup', async (req, res) => {
-  const { name, username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    if (!name || !username || !email || !password) {
+    if (!username || !email || !password) {
       throw new Error('All fields are required');
     }
 
@@ -59,7 +59,6 @@ router.post('/signup', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     const newUser = await User.create({
-      name,
       username,
       email,
       passwordHash,
@@ -76,7 +75,6 @@ router.post('/signup', async (req, res) => {
     });
 
     res.status(201).json({
-      name: newUser.name,
       username: newUser.username,
       email: newUser.email,
     });
@@ -106,7 +104,6 @@ router.post('/login', async (req, res) => {
     }
 
     const payload = {
-      name: user.name,
       username: user.username,
       email: user.email,
     };
