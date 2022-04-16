@@ -83,7 +83,7 @@ router.post('/signup', async (req, res) => {
       res.status(400).json({ msg: error.message });
       return;
     }
-    res.status(500).json({ msg: error.message });
+    res.status(400).json({ msg: error.message });
   }
 });
 
@@ -114,7 +114,7 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({ payload, token });
   } catch (error) {
-    res.status(401).json({ msg: error.message });
+    res.status(400).json({ msg: error.message });
   }
 });
 
