@@ -221,6 +221,7 @@ router.delete('/item/:id', async (req, res) => {
 
 router.get('/year/years/', async (req, res) => {
   const { email } = req.user;
+  const today = new Date();
 
   try {
     const userId = await User.findOne({ email }).select('_id');
@@ -229,7 +230,8 @@ router.get('/year/years/', async (req, res) => {
 
     const years = allItems.map((item) => item.date.getFullYear());
 
-    const uniqueYears = [];
+    const uniqueYears = [today.getFullYear()];
+
     years.forEach((year) => {
       if (!uniqueYears.includes(year)) {
         uniqueYears.push(year);
