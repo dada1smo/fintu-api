@@ -16,6 +16,10 @@ const financialItemSchema = new Schema(
       type: Number,
       min: 1,
       required: true,
+      validate: {
+        validator: Number.isInteger,
+        message: '{VALUE} is not an integer value',
+      },
     },
     user: {
       type: Schema.Types.ObjectId,
@@ -52,10 +56,18 @@ const financialItemSchema = new Schema(
     installment: {
       type: Number,
       min: 1,
+      validate: {
+        validator: Number.isInteger,
+        message: '{VALUE} is not an integer value',
+      },
     },
     installments: {
       type: Number,
       min: 2,
+      validate: {
+        validator: Number.isInteger,
+        message: '{VALUE} is not an integer value',
+      },
     },
   },
   {
