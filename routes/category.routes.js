@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 
     const allCategories = await Category.find({ user: userId });
 
-    res.status(201).json(allCategories);
+    res.status(200).json(allCategories);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -67,7 +67,7 @@ router.put('/:id', async (req, res) => {
       }
     );
 
-    res.status(201).json(updatedCategory);
+    res.status(200).json(updatedCategory);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
