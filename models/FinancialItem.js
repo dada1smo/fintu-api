@@ -56,18 +56,10 @@ const financialItemSchema = new Schema(
     installment: {
       type: Number,
       min: 1,
-      validate: {
-        validator: Number.isInteger,
-        message: '{VALUE} is not an integer value',
-      },
     },
     installments: {
       type: Number,
       min: 2,
-      validate: {
-        validator: Number.isInteger,
-        message: '{VALUE} is not an integer value',
-      },
     },
   },
   {
