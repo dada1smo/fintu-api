@@ -401,4 +401,27 @@ router.get('/savings/items', async (req, res) => {
   }
 });
 
+router.get('/savings/balance', async (req, res) => {
+  const { email } = req.user;
+
+  try {
+    const userId = await User.findOne({ email }).select('_id');
+
+    const savingsItems = await FinancialItem.find({
+      status: 'active',
+      recurring: false,
+      savings: true,
+      user: userId._id,
+    }).sort({ date: 1 });
+
+    const balance = savingsItems
+      .map((item) => item.value)
+      .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+
+    res.status(200).json(balance);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
