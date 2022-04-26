@@ -382,4 +382,23 @@ router.get('/savings', async (req, res) => {
   }
 });
 
+router.get('/savings/items', async (req, res) => {
+  const { email } = req.user;
+
+  try {
+    const userId = await User.findOne({ email }).select('_id');
+
+    const savingsItems = await FinancialItem.find({
+      status: 'active',
+      recurring: false,
+      savings: true,
+      user: userId._id,
+    }).sort({ date: 1 });
+
+    res.status(200).json(savingsItems);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
