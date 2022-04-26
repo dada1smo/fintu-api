@@ -62,7 +62,7 @@ async function getMonthlyBalance(userEmail, reqMonth) {
     date: { $lte: endDate },
     $or: [
       { recurrenceEnd: { $eq: null } },
-      { recurrenceEnd: { $gte: endDate } },
+      { recurrenceEnd: { $gte: startDate } },
     ],
     status: 'active',
     recurring: true,
