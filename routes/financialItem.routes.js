@@ -269,7 +269,7 @@ router.get('/months/:month', async (req, res) => {
       date: { $lte: endDate },
       $or: [
         { recurrenceEnd: { $eq: null } },
-        { recurrenceEnd: { $gte: endDate } },
+        { recurrenceEnd: { $gte: startDate } },
       ],
       status: 'active',
       recurring: true,
