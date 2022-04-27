@@ -48,7 +48,7 @@ async function getMonthlyBalance(userEmail, reqMonth) {
   const startDate = formatDate(reqMonth, 1);
   const endDate = formatDate(reqMonth, 0);
 
-  const userId = await User.findOne({ userEmail }).select('_id');
+  const userId = await User.findOne({ email: userEmail }).select('_id');
 
   const financialItems = await FinancialItem.find({
     date: { $gte: startDate, $lte: endDate },
@@ -164,7 +164,7 @@ router.put('/item/:id', async (req, res) => {
 
   try {
     const userId = await User.findOne({ email }).select('_id');
-    const { user } = await FinancialItem.findOne({ id });
+    const { user } = await FinancialItem.findOne({ _id: id });
 
     if (userId._id.valueOf() !== user.valueOf()) {
       throw new Error("Can't edit another user's item");
@@ -203,7 +203,7 @@ router.delete('/item/:id', async (req, res) => {
 
   try {
     const userId = await User.findOne({ email }).select('_id');
-    const { user } = await FinancialItem.findOne({ id });
+    const { user } = await FinancialItem.findOne({ _id: id });
 
     if (userId._id.valueOf() !== user.valueOf()) {
       throw new Error("Can't delete another user's item");
