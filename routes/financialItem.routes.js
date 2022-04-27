@@ -414,6 +414,10 @@ router.get('/savings/balance', async (req, res) => {
       user: userId._id,
     }).sort({ date: 1 });
 
+    if (savingsItems.length === 0) {
+      return 'No data';
+    }
+
     const balance = savingsItems
       .map((item) => item.value)
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
