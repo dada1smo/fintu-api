@@ -47,7 +47,7 @@ router.put('/:id', async (req, res) => {
 
   try {
     const userId = await User.findOne({ email }).select('_id');
-    const { user } = await Category.findOne({ id });
+    const { user } = await Category.findOne({ _id: id });
 
     if (userId._id.valueOf() !== user.valueOf()) {
       throw new Error("Can't edit another user's category");
@@ -79,7 +79,7 @@ router.delete('/:id', async (req, res) => {
 
   try {
     const userId = await User.findOne({ email }).select('_id');
-    const { user } = await Category.findOne({ id });
+    const { user } = await Category.findOne({ _id: id });
 
     if (userId._id.valueOf() !== user.valueOf()) {
       throw new Error("Can't delete another user's category");
