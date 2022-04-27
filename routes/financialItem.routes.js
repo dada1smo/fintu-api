@@ -415,7 +415,7 @@ router.get('/savings/balance', async (req, res) => {
     }).sort({ date: 1 });
 
     if (savingsItems.length === 0) {
-      return 'No data';
+      return res.status(200).json('No data');
     }
 
     const balance = savingsItems
